@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Multi Graph Search (MGS): A search-based motion planning algorithm for high-dimensional robotic systems like manipulators and mobile manipulators.">
+  <meta name="keywords" content="Motion Planning, Robotics, Manipulation, Mobile Manipulation, Heuristic Search, Multi-Graph Search">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multi Graph Search for High-Dimensional Robot Motion Planning</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3SFQ058VSQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-3SFQ058VSQ');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.gif">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Multi Graph Search for High-Dimensional Robot Motion Planning</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://imishani.github.io">Itamar Mishani</a>,</span>
+            <span class="author-block">
+              <a href="https://www.cs.cmu.edu/~maxim/">Maxim Likhachev</a>
+            </span>
+          </div>
+          <p class="is-size-5 publication-authors"> Carnegie Mellon University </p>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="./static/mgs_paper.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- Appendix Link. -->
+              <span class="link-block">
+                <a href="./static/mgs_appendix.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Appendix</span>
+                </a>
+              </span>
+              <!-- arXiv Link. -->
+              <!-- <span class="link-block">
+                <a href="https://arxiv.org/abs/XXXX.XXXXX"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <!-- <span class="link-block">
+                <a href="https://github.com/imishani/mgs"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/mgs_teaser.mp4"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <b>MGS</b> enables efficient motion planning for high-dimensional robotic systems by simultaneously exploring multiple promising directions anchored by key states.
+      </h2>
+    </div>
+  </div>
+</section>
+
+<!-- Teaser Image -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <div class="content has-text-centered">
+          <img src="./static/images/teaser_warehouse.png" style="max-width: 35%; display: inline-block; vertical-align: top;" alt="Mobile manipulators in warehouse"/>
+          <img src="./static/images/mgs_comparison.png" style="max-width: 63%; display: inline-block; vertical-align: top;" alt="MGS vs Weighted A* comparison"/>
+        </div>
+        <p class="has-text-centered" style="margin-top: 1rem;">
+          <b>Left:</b> Mobile manipulators in warehouse settings demand efficient, predictable motion planning.
+          <b>Middle:</b> MGS anchors search at key states and grows multiple subgraphs simultaneously, yielding a solution with a substantial reduction in search efforts.
+          <b>Right:</b> Weighted-A* expands significantly more states to solve the same problem.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Efficient motion planning for high-dimensional robotic systems, such as manipulators and mobile manipulators, is critical for real-time operation and reliable deployment. Although advances in planning algorithms have enhanced scalability to high-dimensional state spaces, these improvements often come at the cost of generating unpredictable, inconsistent motions or requiring excessive computational resources and memory.
+          </p>
+          <p>
+            In this work, we introduce <b>Multi-Graph Search (MGS)</b>, a search-based motion planning algorithm that generalizes classical unidirectional and bidirectional search to a multi-graph setting. MGS maintains and incrementally expands multiple implicit graphs over the state space, focusing exploration on high-potential regions while allowing initially disconnected subgraphs to be merged through feasible transitions as the search progresses. We prove that MGS is <em>complete</em> and <em>bounded-suboptimal</em>, and empirically demonstrate its effectiveness on a range of manipulation and mobile manipulation tasks.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+
+<!-- Video Carousel -->
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3 has-text-centered" style="margin-bottom: 1.5rem;">Demonstrations</h2>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-mgs2d">
+          <video poster="" id="mgs2d" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/mgs_2d.mp4"
+                    type="video/mp4">
+          </video>
+          <p class="has-text-centered" style="padding-top: 0.5rem;">2D Grid Search Comparison</p>
+        </div>
+        <div class="item item-shelf">
+          <video poster="" id="shelf" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/manipulation_shelf.mp4"
+                    type="video/mp4">
+          </video>
+          <p class="has-text-centered" style="padding-top: 0.5rem;">Shelf Manipulation</p>
+        </div>
+        <div class="item item-cage">
+          <video poster="" id="cage" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/manipulation_cage.mp4"
+                    type="video/mp4">
+          </video>
+          <p class="has-text-centered" style="padding-top: 0.5rem;">Cage Manipulation</p>
+        </div>
+        <div class="item item-navigation">
+          <video poster="" id="navigation" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/navigation.mp4"
+                    type="video/mp4">
+          </video>
+          <p class="has-text-centered" style="padding-top: 0.5rem;">Navigation</p>
+        </div>
+        <div class="item item-mobile">
+          <video poster="" id="mobile" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/mobile_manipulation.mp4"
+                    type="video/mp4">
+          </video>
+          <p class="has-text-centered" style="padding-top: 0.5rem;">Mobile Manipulation</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- Method Overview. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Method Overview</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            <b>MGS</b> is motivated by the observation that humans often solve complex tasks by identifying "mental landmarks" - promising regions of the state space that guide efficient problem-solving. We leverage this intuition by introducing a planning algorithm that searches using a set of <em>key states</em> distributed throughout the state space.
+          </p>
+          <p>
+            Unlike traditional search-based methods that progress unidirectionally from start to goal, our approach simultaneously explores multiple promising directions anchored by these key states, which serve as intermediate landmarks to structure and focus the search. This multi-directional search strategy enables efficient exploration of high-dimensional spaces while preserving the deterministic behavior and theoretical guarantees of classical search-based planners.
+          </p>
+        </div>
+
+        <h3 class="title is-4">Key Contributions</h3>
+        <div class="content">
+          <ul>
+            <li>A multi-directional heuristic search algorithm that performs simultaneous searches rooted at a set of key states distributed throughout the configuration space.</li>
+            <li>Theoretical analysis establishing <b>completeness</b> and <b>bounded suboptimality</b> with respect to discretization guarantees.</li>
+            <li>A principled strategy for selecting key states (graph roots) to identify promising regions for avoiding collisions.</li>
+            <li>Extensive simulation experiments and real-world demonstrations showing improved performance and reliability over traditional baselines.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!--/ Method Overview. -->
+
+  </div>
+</section>
+
+
+<!-- Experiments Section -->
+<section class="section" style="background-color: #f5f5f5;">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Experiments</h2>
+
+    <div class="content has-text-justified">
+      <p>
+        We evaluate MGS on a variety of manipulation and mobile manipulation tasks, comparing against state-of-the-art sampling-based and search-based planners. Our experiments demonstrate that MGS achieves significant improvements in planning time while maintaining solution quality guarantees.
+      </p>
+    </div>
+
+    <div class="columns is-centered">
+      <!-- Manipulation Tasks. -->
+      <div class="column">
+        <div class="content">
+          <h3 class="title is-4">Manipulation Tasks</h3>
+          <p>We test MGS on challenging manipulation scenarios including shelf rearrangement, cage extraction, and bin picking tasks with a 7-DOF robot arm.</p>
+          <img src="./static/images/shelf.png"
+              class="experiment-image"
+              alt="Shelf manipulation task"
+              style="width: 100%; border-radius: 8px;"/>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="content">
+          <h3 class="title is-4">Constrained Environments</h3>
+          <p>MGS excels in highly constrained environments where finding collision-free paths through narrow passages is critical.</p>
+          <img src="./static/images/cage.png"
+               class="experiment-image"
+               alt="Cage manipulation task"
+               style="width: 100%; border-radius: 8px;"/>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="content">
+          <h3 class="title is-4">Bin Picking</h3>
+          <p>Complex bin picking scenarios require efficient exploration of high-dimensional configuration spaces.</p>
+          <img src="./static/images/bin_picking.png"
+               class="experiment-image"
+               alt="Bin picking task"
+               style="width: 100%; border-radius: 8px;"/>
+        </div>
+      </div>
+    </div>
+    <!--/ Manipulation tasks. -->
+
+  </div>
+</section>
+
+
+<!-- Results Section -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Results</h2>
+
+    <div class="content has-text-justified">
+      <p>
+        MGS demonstrates substantial improvements over baseline methods across all experimental scenarios. By anchoring search at key states and growing multiple subgraphs simultaneously, MGS achieves:
+      </p>
+      <ul>
+        <li><b>Reduced search effort:</b> Significantly fewer state expansions compared to unidirectional search methods.</li>
+        <li><b>Faster planning times:</b> Improved computational efficiency in high-dimensional spaces.</li>
+        <li><b>Consistent behavior:</b> Deterministic results with bounded suboptimality guarantees.</li>
+        <li><b>Scalability:</b> Effective performance on mobile manipulation tasks with 10+ DOF.</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- BibTeX -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{mishani2026mgs,
+  author    = {Mishani, Itamar and Likhachev, Maxim},
+  title     = {Multi Graph Search for High-Dimensional Robot Motion Planning},
+  year      = {2026},
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website was adapted from <a href="https://nerfies.github.io">Nerfies</a>, and is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
